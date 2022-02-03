@@ -1,10 +1,10 @@
 const url = 'http://trol.com'
 
 function log(message){
-    console.log(message);
+    console.log('hello ' + message);
 }
 
-module.exports.hello = log;
-module.exports.EndPoint = url;
+module.exports = log;
+// module.exports.EndPoint = url;
 
-console.log(module)
+// console.log(module)
