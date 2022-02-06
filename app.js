@@ -1,7 +1,5 @@
-const logger = require('./logger')
+const path = require('path')
 
-// logger = 1
+const pathObj = path.parse(__filename);
 
-console.log(logger);
-logger('simon')
-// console.log(logger.EndPoint);
+console.log(pathObj)
