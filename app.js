@@ -1,6 +1,9 @@
-const fs = require('fs')
+const EventEmitter = require('events');
 
-fs.readdir('./', (err, files) => {
-    if (err) console.log(`Error: ${err}`)
-    else console.log(`files: ${files}`);
+const emitter = new EventEmitter();
+
+emitter.on('messageLogged', function(){
+    console.log('Listerner Called')
 })
+
+emitter.emit('messageLogged');
