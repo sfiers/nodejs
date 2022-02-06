@@ -1,13 +1,12 @@
-// var x = ;
-const url = 'http://trol.com'
+const EventEmitter = require('events');
 
-function log(message){
-    console.log('hello ' + message);
+class Logger extends EventEmitter {
+    log(message){
+        console.log(`Message: ${message}`);
+    
+        this.emit('messageLogged', {id: 1, url: 'http://'})
+    }
+    
 }
-console.log(__filename);
-console.log(__dirname);
 
-module.exports = log;
-// module.exports.EndPoint = url;
-
-// console.log(module)
+module.exports = Logger;
