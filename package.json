@@ -19,6 +19,9 @@
   "homepage": "https://github.com/sfiers/nodejs#readme",
   "dependencies": {
     "mongoose": "^6.2.0",
-    "underscore": "^1.13.2"
+    "underscore": "^1.4.0"
+  },
+  "devDependencies": {
+    "jshint": "^2.13.4"
   }
 }
