@@ -1,7 +1,6 @@
-const os = require('os')
+const fs = require('fs')
 
-const totalMem = os.totalmem();
-const freeMem = os.freemem();
-
-console.log(`total memory: ${totalMem}`);
-console.log(`free memory: ${freeMem}`);
+fs.readdir('./', (err, files) => {
+    if (err) console.log(`Error: ${err}`)
+    else console.log(`files: ${files}`);
+})
