@@ -1,87 +1,57 @@
 const express = require('express');
+const mongoose = require('mongoose');
+
 const Joi = require('joi');
-const logger = require('./logger');
+
+const logger = require('./middleware/logger');
 
 const app = express();
+const genres = require('./routes/genres');
+const { string, date } = require('joi');
+
+mongoose.connect('mongodb+srv://Simon:admin@cluster0.sk3na.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
+  { useNewUrlParser: true,
+    useUnifiedTopology: true })
+  .then(() => console.log('Connexion à MongoDB réussie !'))
+  .catch(() => console.log('Connexion à MongoDB échouée !'));
+
+const courseSchema = new mongoose.Schema({
+    name: String,
+    author: String,
+    tags: [String],
+    date: {type: Date, default: Date.now},
+    isPublished: Boolean
+})
+
+// create a class course that will be saved in the Coure(s) collection following the courseSchema
+const Course = mongoose.model('Course', courseSchema);
+
+
+async function createCourse(){
+    const course = new Course({
+        name: 'Angular course',
+        author: 'Mosh',
+        tags: ['Angular', 'frontend'],
+        isPublished: true
+    })
+    
+    const result = await course.save();
+    console.log(result);
+}
+
+createCourse();
+
+// Built-in middleware
 
 app.use(express.json()); // parse incomming json and populate req.body
 app.use(express.urlencoded({ extended: true}));
 app.use(express.static('public'))
 
-app.use((req, res, next) => {
-    console.log("Logging...");
-    next();
-});
+app.use('/api/genres', genres)
+
+// custom middleware 
 
 app.use(logger);
-
-const genres = [
-    { id: 1, name: 'Action' },  
-    { id: 2, name: 'Horror' },  
-    { id: 3, name: 'Romance' }
-]
-
-app.get('/api/genres', (req, res) => {
-    res.send(genres);
-});
-
-app.get('/api/genres/:id', (req, res) => {
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
-
-    // 404 resource not found
-    if(!genre) return res.status(404).send('The genre with the given id was not found');
-
-    // genre is found
-    res.send(genre);
-})
-
-app.post('/api/genres', (req, res) => {
-
-    const {error} = validateGenre(req.body);
-
-    if(error) return res.status(400).send(error.details[0].message);
-
-    const genre = {
-        id: genres.length + 1,
-        name: req.body.name
-    };
-    genres.push(genre);
-    res.send(genre);
-})
-
-app.put('/api/genres/:id', (req, res) => {
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
-
-    // 404 resource not found
-    if(!genre) return res.status(404).send('The genre with the given id was not found');
-    
-    const {error} = validateGenre(req.body)
-
-    if(error) return res.status(400).send(error.details[0].message);
-    
-    genre.name = req.body.name;
-    // send back updated genre
-    res.send(genre);
-
-})
-
-app.delete('/api/genres/:id', (req, res) => {
-    const genre = genres.find(c => c.id === parseInt(req.params.id));
-    if (!genre) return res.status(404).send('The genre with the given id was not found');
-
-    const index = genres.indexOf(genre);
-    genres.splice(index, 1);
-
-    res.send(genre);
-})
-
-function validateGenre(genre){
-    schema = Joi.object({
-        name: Joi.string().min(3).required()
-    });
-
-    return schema.validate(genre);
-}
 
 const port = (process.env.PORT || 3000);
 
