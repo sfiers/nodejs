@@ -11,6 +11,8 @@ const genres = require('./routes/genres');
 const customers = require('./routes/customers');
 const movies = require('./routes/movies');
 const rentals = require('./routes/rentals');
+const auth = require('./routes/auth');
+const {login, register} = require('./routes/users')
 const { string, date } = require('joi');
 
 mongoose.connect('mongodb+srv://Simon:admin@cluster0.sk3na.mongodb.net/myFirstDatabase?retryWrites=true&w=majority',
@@ -95,6 +97,10 @@ app.use('/api/genres', genres);
 app.use('/api/customers', customers);
 app.use('/api/movies', movies);
 app.use('/api/rentals', rentals);
+app.use('/api', login);
+app.use('/api', register);
+app.use('/api/auth', auth);
+
 
 // custom middleware 
 
