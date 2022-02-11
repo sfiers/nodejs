@@ -1,4 +1,5 @@
 const bcrypt = require('bcrypt');
+
 const Joi = require('joi');
 const mongoose = require('mongoose');
 const express = require('express');
@@ -17,7 +18,9 @@ router.post('', async (req, res) => {
     const validPwd = await bcrypt.compare(req.body.pwd, user.pwd)
     if (!validPwd) return res.status(400).send('Invalid email or Password.')
 
-    res.send(true);
+    const token = user.generateAuthToken();
+
+    res.send(token);
     
 })
 

@@ -1,13 +1,21 @@
+const config = require('config');
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const mongoose = require('mongoose');
 const express = require('express');
 const router = express.Router();
 const _ = require('lodash');
+const auth = require('../middleware/auth')
 
-const { User, validate } = require('../models/user');
+const { User, validateRegister, validateLogin } = require('../models/user');
+
+const me = router.get('/me', auth, async (req, res, next) => {
+    const user = await User.findById(req.user._id).select('-pwd');
+    res.send(user);
+})
 
 const register = router.post('/users', async (req, res) => {
-    const { error } = validate(req.body);
+    const { error } = validateRegister(req.body);
     if ( error ) return res.status(400).send(error.details[0].message)
 
     let user = await User.findOne({email: req.body.email});
@@ -34,15 +42,14 @@ const register = router.post('/users', async (req, res) => {
     //     email: user.email
     // })
 
+// Add jwt so that user is automatically logged in after registration
 // pick properties using lodash npm package
 
-    res.send(_.pick(user, ['_id', 'name', 'email']))
+    const token = user.generateAuthToken();
+
+    res.header('x-auth-token', token).send(_.pick(user, ['_id', 'name', 'email']))
     
 })
 
-const log = router.post('/login', (req, res) => {
-    
-})
-
-module.exports.login = log;
 module.exports.register = register;
+module.exports.me = me;
