@@ -1,12 +1,12 @@
 import React from "react";
 
 function Like({ liked, onLikeToggle }) {
-  let classes = "fa fa-heart";
+  let classes = "clickable fa fa-heart";
   if (!liked) classes += "-o";
   return (
-    <i
+    <i 
       className={classes}
-      style={{ cursor: 'pointer' }}
+    //   style={{ cursor: 'pointer' }}
       onClick={onLikeToggle}
       aria-hidden="true"
     ></i>

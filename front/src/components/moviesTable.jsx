@@ -1,45 +1,36 @@
-import React from 'react'
-import Like from './common/like'
+import React, { useState } from "react";
+import Like from "./common/like";
+import Table from "./common/table";
 
-function MoviesTable({movies, onLike, onDelete, onSort}) {
+
+function MoviesTable({ movies, onLike, onDelete, onSort, sortColumn }) {
+  const columns = [
+    { path: "title", label: "Title" },
+    { path: "genre.name", label: "Genre" },
+    { path: "numberInStock", label: "Stock" },
+    { path: "dailyRentalRate", label: "Rate" },
+    {
+      key: "heart",
+      content: (movie) => (
+        <Like liked={movie.liked} onLikeToggle={() => onLike(movie)} />
+      ),
+    },
+    {
+      key: "delete",
+      content: (movie) => (
+        <button
+          onClick={() => onDelete(movie)}
+          className="btn btn-danger btn-sm"
+        >
+          Delete
+        </button>
+      ),
+    },
+  ];
+
   return (
-    <table className="table">
-          <thead>
-            <tr>
-              <th onClick={() => onSort('title')}>Title</th>
-              <th onClick={() => onSort('genre.name')}>Genre</th>
-              <th onClick={() => onSort('numberInStock')}>Stock</th>
-              <th onClick={() => onSort('dailyRentalRate')}>Rate</th>
-              <th />
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {movies.map((movie) => (
-              <tr key={movie._id}>
-                <td>{movie.title}</td>
-                <td>{movie.genre.name}</td>
-                <td>{movie.numberInStock}</td>
-                <td>{movie.dailyRentalRate} </td>
-                <td>
-                  <Like
-                    liked={movie.liked}
-                    onLikeToggle={() => onLike(movie)}
-                  />
-                </td>
-                <td>
-                  <button
-                    onClick={() => onDelete(movie)}
-                    className="btn btn-danger btn-sm"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-  )
+    <Table columns={columns} onSort={onSort} sortColumn={sortColumn} data={movies} />
+  );
 }
 
-export default MoviesTable
+export default MoviesTable;
