@@ -16,7 +16,6 @@ function Movies() {
   const [selectedGenre, setSelectedGenre] = useState();
   const [sortColumn, setSortColumn] = useState({ path: "title", order: "asc" });
 
-
   useEffect(() => {
     setGenres([{ _id: "", name: "All Genres" }, ...getGenres()]);
     setMovies(getMovies());
@@ -48,52 +47,54 @@ function Movies() {
 
   const getPagedData = () => {
     const filtered =
-    selectedGenre && selectedGenre._id
-      ? movies.filter((m) => m.genre._id === selectedGenre._id)
-      : movies;
+      selectedGenre && selectedGenre._id
+        ? movies.filter((m) => m.genre._id === selectedGenre._id)
+        : movies;
 
-  const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
+    const sorted = _.orderBy(filtered, [sortColumn.path], [sortColumn.order]);
 
-  const moviesToRender = paginate(sorted, currentPage, pageSize);
+    const moviesToRender = paginate(sorted, currentPage, pageSize);
 
-    return {totalCount: filtered.length, data: moviesToRender}
-  }
+    return { totalCount: filtered.length, data: moviesToRender };
+  };
 
   const { length: count } = movies;
   if (count === 0) {
     return <p>There are no movies in the database.</p>;
   }
 
-  const {totalCount, data: moviesToRender}=getPagedData()
+  const { totalCount, data: moviesToRender } = getPagedData();
 
   return (
-    <div className="row">
-      <div className="col-3">
-        <ListGroup
-          items={genres}
-          onItemSelect={(genre) => handleGenreSelect(genre)}
-          selectedItem={selectedGenre}
-          // valueProperty="_id"
-          // textProperty="name"
-        />
+    <main className="container">
+      <div className="row">
+        <div className="col-3">
+          <ListGroup
+            items={genres}
+            onItemSelect={(genre) => handleGenreSelect(genre)}
+            selectedItem={selectedGenre}
+            // valueProperty="_id"
+            // textProperty="name"
+          />
+        </div>
+        <div className="col">
+          <p>There are {totalCount} movies in the database.</p>
+          <MoviesTable
+            movies={moviesToRender}
+            sortColumn={sortColumn}
+            onLike={(movie) => handleLike(movie)}
+            onDelete={(movie) => handleDelete(movie)}
+            onSort={(path) => handleSort(path)}
+          />
+          <Pagination
+            itemsCount={totalCount}
+            pageSize={pageSize}
+            currentPage={currentPage}
+            onPageChange={(page) => handlePageChange(page)}
+          />
+        </div>
       </div>
-      <div className="col">
-        <p>There are {totalCount} movies in the database.</p>
-        <MoviesTable
-          movies={moviesToRender}
-          sortColumn={sortColumn}
-          onLike={(movie) => handleLike(movie)}
-          onDelete={(movie) => handleDelete(movie)}
-          onSort={(path) => handleSort(path)}
-        />
-        <Pagination
-          itemsCount={totalCount}
-          pageSize={pageSize}
-          currentPage={currentPage}
-          onPageChange={(page) => handlePageChange(page)}
-        />
-      </div>
-    </div>
+    </main>
   );
 }
 

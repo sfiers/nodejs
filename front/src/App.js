@@ -1,8 +1,14 @@
 import "./App.css";
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Counters from "./components/counters";
+import NavBar2 from "./components/navBar2";
 import NavBar from "./components/navBar";
+import Customers from "./components/customers";
+import Rentals from "./components/rentals";
+import NotFound from "./components/notFound";
 import Movies from "./components/movies";
+import {Routes, Route, Navigate} from "react-router-dom";
+import MovieForm from "./components/movieForm";
 
 function App() {
   const [counters, setCounters] = useState([
@@ -15,7 +21,6 @@ function App() {
   const handleDelete = (id) => {
     setCounters(counters.filter((c) => c.id !== id));
   };
-
 
   const handleIncrement = (counter) => {
     const tempCounters = [...counters];
@@ -40,11 +45,29 @@ function App() {
       })
     );
   };
-  return <main className="container">
-    <Movies />
-    {/* <NavBar numberOfCounters={counters.filter(c => c.value !== 0).length}/>
-    <Counters onDelete={handleDelete} onReset={handleReset} onIncrement={handleIncrement} onDecrement={handleDecrement} counters={counters}/> */}
-  </main>;
+  return (
+    <React.Fragment>
+      {/* <NavBar2 /> */}
+        {/* <Movies /> */}
+      
+        <Routes>
+          <Route path="/" element={<Navigate replace to="/movies" />} />
+          <Route path="/" element={<NavBar2 />}>
+            <Route path="/movies/:id" element={<MovieForm />} />
+            <Route path="/movies" element={<Movies />} />
+            <Route path="/customers" element={<Customers />} />
+            <Route path="/rentals" element={<Rentals />} />
+            <Route path="/not-found" element={<NotFound />} />
+          </Route>
+          <Route path="*" element={<NotFound />}/>
+        </Routes>
+    </React.Fragment>
+  );
+
+  {
+    /* <NavBar numberOfCounters={counters.filter(c => c.value !== 0).length}/>
+    <Counters onDelete={handleDelete} onReset={handleReset} onIncrement={handleIncrement} onDecrement={handleDecrement} counters={counters}/> */
+  }
 }
 
 export default App;
